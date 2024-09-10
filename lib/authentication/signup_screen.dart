@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:taxi_app/authentication/auth_barril.dart';
+import 'package:taxi_app/methods/common_methods.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -9,14 +10,34 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
-  TextEditingController nameTextEditingController = TextEditingController();
+  TextEditingController userNameTextEditingController = TextEditingController();
   TextEditingController phoneNumberTextEditingController =
       TextEditingController();
   TextEditingController emailTextEditingController = TextEditingController();
   TextEditingController passwordsTextEditingController =
       TextEditingController();
+  CommonMethods cMethods = CommonMethods();
 
-  checkIfNetworkIsAvailBle() {}
+  checkIfNetworkIsAvailable() {
+    cMethods.checkConnectivity(context);
+    signUpFormValidation();
+  }
+
+  signUpFormValidation() {
+    if (userNameTextEditingController.text.trim().length < 3) {
+      cMethods.displaySnackBar(
+          "Your user name must be at least 4 or more characters", context);
+    } else if (phoneNumberTextEditingController.text.trim().length < 7) {
+      cMethods.displaySnackBar(
+          "Your phone number must be at least 8 or more characters", context);
+    } else if (!emailTextEditingController.text.contains("@")) {
+      cMethods.displaySnackBar("Please write valid email", context);
+    } else if (passwordsTextEditingController.text.trim().length < 5) {
+      cMethods.displaySnackBar(
+          "Your password must be at least 6 or more characters", context);
+    } else {}
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,7 +56,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 child: Column(
                   children: [
                     TextField(
-                      controller: nameTextEditingController,
+                      controller: userNameTextEditingController,
                       keyboardType: TextInputType.emailAddress,
                       decoration: const InputDecoration(
                         labelText: "User name",
@@ -84,7 +105,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       height: 22,
                     ),
                     ElevatedButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          checkIfNetworkIsAvailable();
+                        },
                         style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.purple,
                             padding: const EdgeInsets.symmetric(
